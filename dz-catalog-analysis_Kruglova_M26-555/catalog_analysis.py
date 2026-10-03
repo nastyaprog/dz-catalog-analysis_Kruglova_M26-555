@@ -1,6 +1,9 @@
+import math
+
 movies = [
     {"title": "The Dune Chronicles", "year": 2021, "genres": {"sci-fi", "drama"},
-     "rating": 8.6, "duration_min": 155, "actors": ["T. Chalamet", "R. Ferguson", "O. Isaac"]},
+     "rating": 8.6, "duration_min": 155, "actors": ["T. Chalamet", "R. Ferguson", 
+                                                    "O. Isaac"]},
     {"title": "Kitchen Stories", "year": 2019, "genres": {"comedy", "drama"},
      "rating": 7.1, "duration_min": 98, "actors": ["A. Novak", "M. Ferguson"]},
     {"title": "silent hours", "year": 2016, "genres": {"thriller", "drama"},
@@ -29,9 +32,7 @@ def average_rating(movies: list[dict]) -> float:
     sum_rate = sum(film['rating'] for film in movies)
     return round(sum_rate / len(movies), 1)
 
-import math
-
-def catalog_age_stats(movies: list[dict], current_year: int = 2026) -> tuple[int, int, int]:
+def catalog_age_stats(movies, current_year):
     '''возвращает кортеж (самый старый фильм в годах, самый новый фильм в годах,
      среднее), где среднее округлено вверх до целого с помощью math.ceil.'''
     if not movies:
@@ -126,7 +127,9 @@ def format_report_line(movie: dict) -> str:
     rate = movie.get('rating')
     duration = duration_in_hours(movie.get('duration_min'))
     unsorted_genres = movie.get('genres', [])
-    sorted_genres = ', '.join(sorted(unsorted_genres)) if unsorted_genres else 'жанр не определен'
+    sorted_genres = (
+        ', '.join(sorted(unsorted_genres)) if unsorted_genres else 'жанр не определен'
+    )
 
     return f'"{title}" ({year}) — {rate}/10, {duration}, жанры: {sorted_genres}'
 
@@ -237,11 +240,14 @@ def build_report(movies):
 
     print("ОТЧеТ ПО КАТАЛОГУ")
     print(f"Средний рейтинг: {average_rating(movies)}")
-    print(f"Средний возраст фильмов: {catalog_age_stats(movies, current_year=2026)[2]} лет")
+    print(f"Средний возраст фильмов: {
+        catalog_age_stats(movies, current_year=2026)[2]} лет")
 
     print("\nТоп-3 фильма:")
-    #для каждого фильма m в списке movies сделаем запись, где ключ — название фильма, а значение — сам словарь фильма
-    #так как top_n_by_rating возвращает только кортежи, а в format_report_line нужен словарь
+    #для каждого фильма m в списке movies сделаем запись, где ключ — название фильма, 
+    #а значение — сам словарь фильма
+    #так как top_n_by_rating возвращает только кортежи, 
+    #а в format_report_line нужен словарь
     by_title = {m["title"]: m for m in movies}
     for title, _ in top_n_by_rating(movies, n=3):
         #передаём словарь в функцию
