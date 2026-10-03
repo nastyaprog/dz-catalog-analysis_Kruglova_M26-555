@@ -73,19 +73,23 @@ def decade_label(year):
         case _ if year < 2015:
             return 'старые'
 
-for film in movies:
-    if 'comedy' in film['genres']:
-        continue
-    print(film['title'])
+def print_non_comedy_titles(movies):
+    '''печатает фильмы не комедии'''
+    for film in movies:
+        if 'comedy' in film['genres']:
+            continue
+        print(film['title'])
 
-i = 0
-while i < len(movies):
-    if movies[i]['rating'] > 9.0:
-        print(movies[i]['title'])
-        break
-    i += 1
-else:
-    print('Шедевров не найдено')
+def find_first_masterpiece(movies):
+    '''печатает первый шедевр с оценкой от 9'''
+    i = 0
+    while i < len(movies):
+        if movies[i]['rating'] > 9.0:
+            print(movies[i]['title'])
+            break
+        i += 1
+    else:
+        print('Шедевров не найдено')
 
 def count_long_movies(movies: list[dict], threshold: int = 120) -> int:
     '''считает количество фильмов длиннее threshold минут'''
@@ -209,7 +213,51 @@ def iter_high_rated(movies, min_rating=8.0):
         if film.get('rating', 0) >= min_rating:
             yield film
 
-for film in iter_high_rated(movies):
-    print(format_report_line(film))
+def show_high_rated_movies(movies, min_rating=8.0):
+    """
+    Демонстрирует работу генератора iter_high_rated: 
+    печатает фильмы с рейтингом >= min_rating.
+    """
+    for film in iter_high_rated(movies, min_rating):
+        print(format_report_line(film))
 
-sum(film["duration_min"] for film in movies if film["rating"] > 7)
+def total_duration_high_rated(movies, min_rating=7.0):
+    """
+    Возвращает суммарную длительность (в минутах) фильмов с рейтингом 
+    не ниже min_rating.
+    """
+    return sum(
+        film["duration_min"]
+        for film in movies
+        if film["rating"] > min_rating
+    )
+
+def build_report(movies):
+    '''Собирает отчёт по каталогу из результатов всех предыдущих этапов.'''
+
+    print("ОТЧеТ ПО КАТАЛОГУ")
+    print(f"Средний рейтинг: {average_rating(movies)}")
+    print(f"Средний возраст фильмов: {catalog_age_stats(movies, current_year=2026)[2]} лет")
+
+    print("\nТоп-3 фильма:")
+    #для каждого фильма m в списке movies сделаем запись, где ключ — название фильма, а значение — сам словарь фильма
+    #так как top_n_by_rating возвращает только кортежи, а в format_report_line нужен словарь
+    by_title = {m["title"]: m for m in movies}
+    for title, _ in top_n_by_rating(movies, n=3):
+        #передаём словарь в функцию
+        print("  " + format_report_line(by_title[title]))
+
+    print("\nФильмов по жанрам:")
+
+    for genre, cnt in sorted(count_by_genre(movies).items(), 
+    #У нас два критерия: Сначала — по количеству, по убыванию.
+    #Решение: для количества используем минус, чтобы убывание стало возрастанием 
+    #отрицательных чисел, а для названия оставляем как есть.
+                             key = lambda item: (-item[1], item[0])):
+        print(f"  {genre} — {cnt}")
+
+    print(f'\nВсе жанры каталога: {", ".join(sorted(all_genres(movies)))}')
+
+
+if __name__ == "__main__":
+    build_report(movies)
