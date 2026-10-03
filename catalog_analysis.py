@@ -147,6 +147,27 @@ def top_n_by_rating(movies: list[dict], n: int = 3) -> list[tuple[str, float | i
             for film in top_movies
             ]
 
+def count_by_genre(movies: list[dict]) -> dict[str, int]:
+    '''возвращает словарь из жанра и количества фильмов'''
+    genre_counts = {}
+    for film in movies:
+        genres = film.get('genres', [])
+
+        for genre in genres:
+            genre_counts[genre] = genre_counts.get(genre, 0) + 1
+
+    return genre_counts
 
 
+def actor_filmography(movies: list[dict]) -> dict[str, list[str]]:
+    '''возвращает актера и список фильмов с ним в виде словаря'''
+    actors_movies = {}
+    for film in movies:
+        actors = film.get('actors', [])
+        title = film.get('title', 'Нет названия')
 
+        for actor in actors:
+            if actor not in actors_movies:
+                actors_movies[actor] = []
+            actors_movies[actor].append(title)
+    return actors_movies
