@@ -86,3 +86,11 @@ while i < len(movies):
     i += 1
 else:
     print('Шедевров не найдено')
+
+def count_long_movies(movies: list[dict], threshold: int = 120) -> int:
+    '''считает количество фильмов длиннее threshold минут'''
+    result = 0
+    for film in movies:
+        if film['duration_min'] > threshold:
+            result += 1
+    return result
