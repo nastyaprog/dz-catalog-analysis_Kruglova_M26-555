@@ -171,3 +171,33 @@ def actor_filmography(movies: list[dict]) -> dict[str, list[str]]:
                 actors_movies[actor] = []
             actors_movies[actor].append(title)
     return actors_movies
+
+def all_genres(movies: list[dict]) -> set[str]:
+    '''возвращает множество всех уникальных жанров каталога.'''
+    result = set()
+
+    for movie in movies:
+        genres = movie.get('genres', [])
+        result.update(genres)
+    return result
+
+def common_actors(movie1: dict, movie2: dict) -> set[str]:
+    '''возвращает множество актеров, снимавшихся в обоих фильмах.'''
+    actors_1 = set(movie1.get('actors', []))
+    actors_2 = set(movie2.get('actors', []))
+    result = actors_1 & actors_2
+
+    return result
+
+def genres_only_in_one(movies_a: list[dict], movies_b: list[dict]) -> set[str]:
+    '''возвращает жанры, встречающиеся в movies_a, но не встречающиеся в movies_b'''
+
+    genres_a = set()
+    for film_a in movies_a:
+        genres_a.update(film_a.get('genres', []))
+
+    genres_b = set()
+    for film_b in movies_b:
+        genres_b.update(film_b.get('genres', []))
+
+    return genres_a - genres_b
