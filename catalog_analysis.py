@@ -53,3 +53,22 @@ def duration_in_hours(minutes: int) -> str:
     hours = minutes // 60
     mins = minutes % 60
     return(f'{hours}ч {mins}м')
+
+def rating_tier(rating: float) -> str:
+    '''по оценке возвращает категорию: "шедевр" (≥9), "хорошо" (7–8.9),
+    "средне" (5–6.9), "слабо" (<5)'''
+
+    return 'шедевр' if rating >= 9 else ('хорошо' if rating >=7 
+                                         else ('средне' if rating >=5 
+                                               else 'слабо'))
+
+def decade_label(year):
+    '''возвращает метку "новые" (после 2020), "недавние" (2015–2020)
+    или "старые" (раньше 2015)'''
+    match year:
+        case _ if year > 2020:
+            return 'новые'
+        case _ if 2015 <= year <= 2020:
+            return 'недавние'
+        case _ if year < 2015:
+            return 'старые'
