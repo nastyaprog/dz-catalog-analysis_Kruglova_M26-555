@@ -126,6 +126,27 @@ def format_report_line(movie: dict) -> str:
 
     return f'"{title}" ({year}) — {rate}/10, {duration}, жанры: {sorted_genres}'
 
+def titles_sorted_by_rating(movies):
+    '''возвращает список названий фильмов, отсортированных по убыванию рейтинга'''
+    sorted_movies = sorted(movies,
+                           key = lambda film: film.get('rating'),
+                           reverse = True)
+    return [film.get('title', 'Нет названия') for film in sorted_movies]
+
+
+def top_n_by_rating(movies: list[dict], n: int = 3) -> list[tuple[str, float | int]]:
+    '''возвращает список из n кортежей (title, rating) — топ по рейтингу.'''
+    sorted_movies = sorted(movies,
+                           key = lambda film: film.get('rating'),
+                           reverse = True)
+
+    top_movies = sorted_movies[:n]
+
+    return [(film.get('title', 'Нет названия'),
+             film.get('rating', 'Нет оценки'))
+            for film in top_movies
+            ]
+
 
 
 
